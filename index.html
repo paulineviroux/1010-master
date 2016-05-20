@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+
+        <title>DIXDIX</title>
+
+        <style>
+            body {
+                background: rgb(86, 213, 198);
+background: -moz-linear-gradient(110deg, rgb(86, 213, 198) 30%, rgb(90, 183, 206) 70%);
+background: -webkit-linear-gradient(110deg, rgb(86, 213, 198) 30%, rgb(90, 183, 206) 70%);
+background: -o-linear-gradient(110deg, rgb(86, 213, 198) 30%, rgb(90, 183, 206) 70%);
+background: -ms-linear-gradient(110deg, rgb(86, 213, 198) 30%, rgb(90, 183, 206) 70%);
+background: linear-gradient(200deg, rgb(86, 213, 198) 30%, rgb(90, 183, 206) 70%);
+                background-repeat: no-repeat;
+            }
+
+            h1 {
+                font-family: 'Futura';
+                letter-spacing: 4px;
+                color: #FFF;
+                text-align: center;
+                text-shadow: 0 0 2px rgba( 0, 0, 0, 0.6 );
+                text-transform: uppercase;
+            }
+
+            canvas {
+                display: block;
+                margin: 20px auto;
+                border: 1px solid rgba( 0, 50, 100, 0.4 );
+                box-shadow: 0 0 20px 0 rgba( 0, 0, 0, 0.4 );
+            }
+
+            ::selection {
+                background: transparent;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>dixdix</h1>
+
+        <canvas id="game" width="288" height="511"></canvas> 
+
+        <script src="Dixdix.js"></script>
+        <script src="game.js"></script>
+    </body>
+</html>
