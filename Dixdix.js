@@ -145,6 +145,11 @@
             game._drawSpriteFromFrame( this.frames[0] );
         }
         Piece.prototype.update = function() {
+            if (game.mouseDraggedElement == this) {
+                game.mouseDragging = true;
+                game._updateDragDrop( this );
+            }
+
             this.draw();
         }
 
@@ -172,32 +177,57 @@
             );
         };
 
-        // this._mouseDown = function (event) {
-        //     this.
-        // }
+        this._mouseDown = function (event) {
+            for (var i = 0; i < game.pieces.length; i++) {
+                if (game._checkPointerPiece( game.pieces[i] ) == true) {
+                    game.mouseDraggedElement = game.pieces[i];
+                }
+            }
+        }
 
-        // this._mouseMove = function (event){
+        this._mouseMove = function (event){
 
-        // }
+            game.mousePosition.x = event.clientX - (window.innerWidth - game.app.canvas.width) / 2; 
+            game.mousePosition.y = event.clientY - game.app.canvas.offsetTop;
+
+ 
+        };
 
         // this._mouseUp = function (event){
 
         // }
 
-        // this._updateDradDrop = function (piece){
+        this._updateDragDrop = function (piece){
 
-        // }
+            piece.frames[0].dx = game.mousePosition.x;
+            piece.frames[0].dy = game.mousePosition.y;
+        }
 
-        // this._checkPointerPiece = function (piece){
+        this._checkPointerPiece = function ( piece ){
+        
+            if ( game.mousePosition.x >= piece.frames[0].dx 
+                && game.mousePosition.x <= piece.frames[0].dx + piece.frames[0].dw  
+                && game.mousePosition.y >= piece.frames[0].dy 
+                && game.mousePosition.y <= piece.frames[0].dy + piece.frames[0].dh )
 
-        // }
+            {
+                return true;
+            } else {
+                return false;
+            }
+
+        };
 
         // this._checkPieceInBox = function (piece){
 
         // }
 
-        //Setup aniamtion
+        //Setup aniamtion -> dessiner et va appler tout les updates et nous permettre de jouer
         this.animate = function( ) {
+            this.animationRequestID = window.requestAnimationFrame( this.animate.bind( this ) );
+
+            // draw: clear
+            this.app.context.clearRect( 0, 0, this.app.width, this.app.height );
             this.background.draw();
             this.grid.draw();
             this.logo.draw();
@@ -214,13 +244,19 @@
         };
         
         //Init game
-        this.init = function() {
+        this.init = function() { // toutess les var que je crée devienennt des prop de game
+            if ( !this.eventsSetted ) {
+                this.app.canvas.addEventListener( "mousemove", this._mouseMove.bind(this._mouseMove) );
+                this.app.canvas.addEventListener( "mousedown", this._mouseDown.bind(this._mouseDown) );
+            }
+
             this.mousePosition ={
                 x : 0,
                 y : 0
             };
             this.mouseDragging = false;
-            this.mouseDraggedElements = null;
+            this.mouseDraggedElement = null;
+
 
             // reset some variables
             this.pieces =[];
