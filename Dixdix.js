@@ -139,18 +139,41 @@
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 }
-            ] 
+            ],
+            this.positionInitialX = x,
+            this.positionInitialY = y,
+            this.wasDragged = false
+
         }
         Piece.prototype.draw = function() {
             game._drawSpriteFromFrame( this.frames[0] );
         }
         Piece.prototype.update = function() {
+            //Drag
             if (game.mouseDraggedElement == this) {
                 game.mouseDragging = true;
                 game._updateDragDrop( this );
+                this.wasDragged = true;
+            }
+            //Drop
+            
+            if (game.mouseDragging == false ) {
+                if ( this.wasDragged == true ) {
+                    if (game._checkPieceInGrid( this ) == true) {
+                        var index = game.pieces.indexOf( this ); //indexOf permet de rechercher ds un taleau, un élément //sert à trouver ou se trouve la piece dans le tableau, a quel index
+                        game.pieces.splice( index, 1); //1arg : index ou on commence , 2arg : nombre a supprimer
+                    } else {
+                        this.wasDragged = false;
+                        this.resetPosition();
+                    }
+                }
             }
 
             this.draw();
+        }
+        Piece.prototype.resetPosition = function( ){
+            this.frames[0].dx = this.positionInitialX;
+            this.frames[0].dy = this.positionInitialY;
         }
 
         Piece.generate = function( frames ){
@@ -160,6 +183,7 @@
                 game.pieces.push( new Piece(frames[i].dx, frames[i].dy) );            
             }
         };
+
 
 
         //Utils
@@ -193,14 +217,15 @@
  
         };
 
-        // this._mouseUp = function (event){
-
-        // }
+        this._mouseUp = function (event){
+            game.mouseDraggedElement = null;
+            game.mouseDragging = false;
+        }
 
         this._updateDragDrop = function (piece){
 
-            piece.frames[0].dx = game.mousePosition.x;
-            piece.frames[0].dy = game.mousePosition.y;
+            piece.frames[0].dx = game.mousePosition.x - piece.frames[0].dw / 2;
+            piece.frames[0].dy = game.mousePosition.y - piece.frames[0].dh / 2;
         }
 
         this._checkPointerPiece = function ( piece ){
@@ -218,9 +243,20 @@
 
         };
 
-        // this._checkPieceInBox = function (piece){
+        this._checkPieceInGrid = function (piece ){
+            
 
-        // }
+            if ( piece.frames[0].dx >= game.grid.frame.dx 
+                && piece.frames[0].dx <= game.grid.frame.dx + game.grid.frame.dw 
+                && piece.frames[0].dy >= game.grid.frame.dy 
+                && piece.frames[0].dy <= game.grid.frame.dy + game.grid.frame.dh )
+                
+            {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         //Setup aniamtion -> dessiner et va appler tout les updates et nous permettre de jouer
         this.animate = function( ) {
@@ -248,6 +284,7 @@
             if ( !this.eventsSetted ) {
                 this.app.canvas.addEventListener( "mousemove", this._mouseMove.bind(this._mouseMove) );
                 this.app.canvas.addEventListener( "mousedown", this._mouseDown.bind(this._mouseDown) );
+                this.app.canvas.addEventListener( "mouseup", this._mouseUp.bind(this._mouseUp));
             }
 
             this.mousePosition ={
