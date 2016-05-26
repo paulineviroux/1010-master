@@ -595,7 +595,7 @@
                     if ( position.x > 8 || position.y > 8 ) {
                         return false; 
                     } else { 
-                        for ( var xGrid = position.x ; xGrid <= position.x + 1 ; xGrid++ ) { /
+                        for ( var xGrid = position.x ; xGrid <= position.x + 1 ; xGrid++ ) { 
                             for (var yGrid = position.y ; yGrid <= position.y + 1; yGrid++ ) {
                                 var index = game._indexFromCoord( xGrid, yGrid, game.column );
                                 if (xGrid != position.x || yGrid != position.y ) {
@@ -824,6 +824,49 @@
 
         };
 
+        // Game Over Screen
+
+        this.gameOverScreen = {
+            "frames": {
+                "title": {
+                    "sx": 106,
+                    "sy": 872,
+                    "sw": 168,
+                    "sh": 24,
+                    "dx": ( game.app.width - 168 ) / 2,
+                    "dy": 0, //TODO
+                    "dw": 168,
+                    "dh": 24
+                },
+                "cup": {
+                    "sx": 224,
+                    "sy": 560,
+                    "sw": 40,
+                    "sh": 34,
+                    "dx": ( game.app.width - 40 ) / 2,
+                    "dy": 0, //TODO
+                    "dw": 40,
+                    "dh": 34
+                },
+                "cyphers": {
+                    "sx": 17,
+                    "sw": 14,
+                    "sh": 21,
+                    "sy": {
+                        "0": 560,
+                        "1": 592,
+                        "2": 621,
+                        "3": 651,
+                        "4": 681,
+                        "5": 712,
+                        "6": 740,
+                        "7": 772,
+                        "8": 800,
+                        "9": 831
+                    }
+                }
+            }
+        }
 
 
         //Utils
@@ -889,8 +932,7 @@
             if ( piece.frames[0].dx >= game.plateform.frame.dx 
                 && piece.frames[0].dx <= game.plateform.frame.dx + game.plateform.frame.dw 
                 && piece.frames[0].dy >= game.plateform.frame.dy 
-                && piece.frames[0].dy <= game.plateform.frame.dy + game.plateform.frame.dh )
-                
+                && piece.frames[0].dy <= game.plateform.frame.dy + game.plateform.frame.dh )   
             {
                 return true;
             } else {
