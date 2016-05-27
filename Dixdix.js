@@ -37,7 +37,8 @@
         };
 
         //Plateform
-        this.plateform = { 
+        this.plateform = {
+            "lineFull": [],
             "gridToDraw": [],
             "frames": [
 
@@ -172,6 +173,17 @@
                 };
             }, 
             "update" : function(){
+                for (var i = 0; i < game.column ; i++) {
+                    if ( this.canResetLineY(i) ) {
+                        for (var j = 0; j < this.lineFull.length; j++) {
+                            this.lineFull[j].value = 0;
+                        }
+                    } else if( this.canResetLineX(i) ) {
+                        for (var j = 0; j < this.lineFull.length; j++) {
+                            this.lineFull[j].value = 0;
+                        }
+                    }
+                }
                 this.draw();
 
             }, 
@@ -212,7 +224,32 @@
                     this.gridToDraw[i].dx  = game.grid[i].dx;  
                     this.gridToDraw[i].dy  = game.grid[i].dy; //Je fais une copie, je la modifie pour qu'il soit égal a celui de la grille
                 }
+            },
+            "canResetLineY" : function( x ) { // LineFull contient tout les objets qu'il y a en x et donc quand je veux reset lineY, je place un x, je verifie tout les éléments ou x vaut 0-9 
+                this.lineFull = game.grid.filter( this.filterX.bind( this, x ));
+                for (var i = 0; i < this.lineFull.length; i++) {
+                    if ( this.lineFull[i].value == 0) {
+                        return false;
+                    }   
+                }
+                return true;
+            }, 
+            "canResetLineX" : function( y ) {
+                this.lineFull = game.grid.filter( this.filterY.bind( this, y ));
+                for (var i = 0; i < this.lineFull.length; i++) {
+                    if ( this.lineFull[i].value == 0) {
+                        return false;
+                    }   
+                }
+                return true;
+            }, 
+            "filterX" : function ( number, obj ) {
+                return obj.x === number; 
+            },
+            "filterY" : function ( number, obj ) {
+                return obj.y === number;
             }
+
         };
 
         //Logo
@@ -278,12 +315,17 @@
                     game.app.context.fill();
                     game.app.context.stroke;
 
+                    game.pieces.forEach( function( oPiece ) {
+                        oPiece.update();
+                    } );
+
                 }
             }, 
             "update" : function() {
                 if ( game.pieces.length === 0) {
                     Piece.generate(this.frames);
                 }
+
                 this.draw();
             }
         };
@@ -291,16 +333,180 @@
         //Piece
         Piece = function( x, y, type ){
             this.frames = [
+                // 0 : grey
                 {
-                    "sx": 313,
-                    "sy": 272,
-                    "sw": 80,
-                    "sh": 80,
-                    "dx": x + 5,
-                    "dy": y + 8,
+
+                },
+                // 1 : pink
+                {
+                 "sx": 309,
+                       "sy": 273,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x + 10 || 5,
+                    "dy": y + 10 || game.app.height - 100 ,
+                    // 3/10 of board warming to keep the good proportion
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 2 : darkblue horizontal
+                {
+                 "sx": 388,
+                       "sy": 272,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 3 : darkblue vertical
+                {
+                 "sx": 468,
+                       "sy": 273,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 4 : lightblue
+                {
+                 "sx": 520,
+                       "sy": 273,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 5 : darkcyan both right
+                {
+                 "sx": 310,
+                       "sy": 352,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 6 : darkcyan both left
+                {
+                 "sx": 388,
+                       "sy": 352,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 7 : darkcyan top right
+                {
+                 "sx": 467,
+                       "sy": 352,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3    
+                },
+                // 8 : darkcyan top left
+                {
+                 "sx": 545,
+                       "sy": 352,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 9 : yellow
+                {
+                 "sx": 308,
+                       "sy": 431,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 10 : red vertical
+                {
+                 "sx": 385,
+                       "sy": 431,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 11 : red horizontal
+                {
+                 "sx": 467,
+                       "sy": 431,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 12 : orange top right
+                {
+                 "sx": 547,
+                       "sy": 431,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 13 : orange both left
+                {
+                 "sx": 309,
+                       "sy": 510,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 14 : orange both right
+                {
+                 "sx": 388,
+                       "sy": 510,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
+                    "dw": (game.app.width - 20) / 10 * 3,
+                    "dh": (game.app.width - 20) / 10 * 3
+                },
+                // 15 : orange top left
+                {
+                 "sx": 467,
+                       "sy": 510,
+                       "sw": 77,
+                       "sh": 77,
+                    "dx": x,
+                    "dy": y,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 }
+                // 16 : green horizontal
+                // 17 : green vertical
+                // 18 : darkred horizontal
+                // 19 : darkred vertical
             ],
             this.positionInitialX = x,
             this.positionInitialY = y,
@@ -309,28 +515,18 @@
 
         }
         Piece.prototype.draw = function() {
-            game._drawSpriteFromFrame( this.frames[0] );
+            game._drawSpriteFromFrame( this.frames[ this.type ] );
         }
         Piece.prototype.update = function() {
             //Drag
             if (game.mouseDraggedElement == this) {
+
                 game.mouseDragging = true;
                 game._updateDragDrop( this );
                 this.wasDragged = true;
             }
             //Drop
             
-            // if (game.mouseDragging == false ) {
-            //     if ( this.wasDragged == true ) {
-            //         if (game._checkPieceInPlateform( this ) == true) {
-            //             var index = game.pieces.indexOf( this ); //indexOf permet de rechercher ds un taleau, un élément //sert à trouver ou se trouve la piece dans le tableau, a quel index
-            //             game.pieces.splice( index, 1); //1arg : index ou on commence , 2arg : nombre a supprimer
-            //         } else {
-            //             this.wasDragged = false;
-            //             this.resetPosition();
-            //         }
-            //     }
-            // }
             if (game.mouseDragging == false ) {
                 if ( this.wasDragged == true ) {
                     var position = game._checkPointerInGrid(); //est ce que le curseur est dans la grille? 
@@ -339,7 +535,10 @@
                             var index = game.pieces.indexOf( this );
                             game.pieces.splice( index, 1);
                             this.changeGrid( position );
-                        } 
+                        } else {
+                            this.wasDragged = false;
+                            this.resetPosition();
+                        }
                         
                     } else {
                         this.wasDragged = false;
@@ -351,10 +550,10 @@
             this.draw();
         }
         Piece.prototype.resetPosition = function( ){
-            this.frames[0].dx = this.positionInitialX;
-            this.frames[0].dy = this.positionInitialY;
+            this.frames[ this.type ].dx = this.positionInitialX;
+            this.frames[ this.type ].dy = this.positionInitialY;
         }
-        Piece.prototype.changeGrid = function(position) {
+        Piece.prototype.changeGrid = function(position) { 
             if ( position == undefined ) {
                 console.log("changeGrid argument is invalid : " + position);
             }
@@ -387,7 +586,7 @@
                 case 3:
                     for ( var yGrid = position.y - 1; yGrid <= position.y + 1; yGrid++ ) {
                         var index = game._indexFromCoord( position.x, yGrid, game.column) ;
-                        game.grid[index].value = 2;
+                        game.grid[index].value = 2; //Je change la couleur de la grille grise 
                     }
                     break;
                 // 4 : lightblue piece
@@ -516,7 +715,6 @@
                 // 17 : green vertical
                 // 18 : darkred horizontal
                 // 19 : darkred vertical
-            var canChangeGrid = true;
             if (position == undefined ){
                 return false
             }
@@ -581,7 +779,7 @@
 
                 // 4 : lightblue piece
                 case 4 : 
-                    var index = game._indexFromCoord( position.x, postion.y, game.column );
+                    var index = game._indexFromCoord( position.x, position.y, game.column );
                     if ( game.grid[index].value != 0 ) {
                         return false;
                     } else {
@@ -610,8 +808,8 @@
                     break; 
                 // 6 : darkcyan both left piece
                 case 6:
-                    if ( position.x > 8 ) {
-                        return false; 
+                    if ( position.y > 8 ) {
+                        return false; //on le dessine pas, on reset sa position
                     } else {
                         for (var xGrid = position.x - 1 ; xGrid <= position.x ; xGrid++) {
                             for (var yGrid = position.y ; yGrid <= position.y + 1 ; yGrid++) {
@@ -619,8 +817,8 @@
                                     return false
                                 }
                                 var index = game._indexFromCoord(xGrid, yGrid, game.column);
-                                if (xGrid != position.x || yGrid != position.y) {
-                                    if ( game.grid[index].value != 0 ) {
+                                if (xGrid != position.x || yGrid != position.y) {// seule condition pour ne pas dessiner un carré
+                                    if ( game.grid[index].value != 0 ) { //Verifie si il y a pas deja une piece a cet endroit
                                         return false;
                                     }
                                 }
@@ -819,7 +1017,15 @@
             var i = 0;
 
             for (var i = 0; i < frames.length; i++) {
-                game.pieces.push( new Piece(frames[i].dx, frames[i].dy, 1) ); 
+
+                var random = Math.floor(Math.random() * 15);
+                if ( random == 0) {
+                    i--;
+                } else {
+                    game.pieces.push( new Piece(frames[i].dx, frames[i].dy, random) );
+                }
+                
+
             }
 
         };
@@ -907,16 +1113,16 @@
 
         this._updateDragDrop = function (piece){
 
-            piece.frames[0].dx = game.mousePosition.x - piece.frames[0].dw / 2;
-            piece.frames[0].dy = game.mousePosition.y - piece.frames[0].dh / 2;
+            piece.frames[ piece.type ].dx = game.mousePosition.x - piece.frames[ piece.type ].dw / 2;
+            piece.frames[ piece.type ].dy = game.mousePosition.y - piece.frames[ piece.type ].dh / 2;
         }
 
         this._checkPointerPiece = function ( piece ){
         
-            if ( game.mousePosition.x >= piece.frames[0].dx 
-                && game.mousePosition.x <= piece.frames[0].dx + piece.frames[0].dw  
-                && game.mousePosition.y >= piece.frames[0].dy 
-                && game.mousePosition.y <= piece.frames[0].dy + piece.frames[0].dh )
+            if ( game.mousePosition.x >= piece.frames[ piece.type ].dx 
+                && game.mousePosition.x <= piece.frames[ piece.type ].dx + piece.frames[ piece.type ].dw  
+                && game.mousePosition.y >= piece.frames[ piece.type ].dy 
+                && game.mousePosition.y <= piece.frames[ piece.type ].dy + piece.frames[ piece.type ].dh )
 
             {
                 return true;
@@ -979,13 +1185,11 @@
             this.logo.draw();
             this.cup.draw();
 
-            this.container.update();
+            
             this.plateform.update();
+            this.container.update();
 
-
-            this.pieces.forEach( function( oPiece ) {
-                oPiece.update();
-            } );
+            
 
 
         };
@@ -1039,7 +1243,7 @@
         //Load spriteSheet
         this.spriteSheet = new Image();
         this.spriteSheet.addEventListener( "load", this.init.bind( this) );
-        this.spriteSheet.src = "./resources/sprite1010.png";
+        this.spriteSheet.src = "./resources/sprite10102.png";
 
     };
 
