@@ -285,6 +285,54 @@
                 game._drawSpriteFromFrame( this.frame );
             }
         };
+        //Score 
+        this.scoreScreen = {
+            "frame":{
+                "dx":game.app.width / 2 - 85,
+                "dy":45,
+                "dw":60,
+                "dh":34  
+            },
+            "cyphers": {
+                    "sx": 17,
+                    "sw": 14,
+                    "sh": 21,
+                    "sy": {
+                        "0": 561,
+                        "1": 591,
+                        "2": 621,
+                        "3": 651,
+                        "4": 681,
+                        "5": 711,
+                        "6": 741,
+                        "7": 771,
+                        "8": 801,
+                        "9": 831
+                }
+            },
+            "draw": function(){
+                var aScoreParts = ( game.score + "" ).split( "" ),
+                    self = this;
+
+
+                aScoreParts.reverse().forEach( function( sScorePart, iIndex ) {
+                    var iDx = game.app.width / 2 - 30 - self.cyphers.sw;
+                    game._drawSpriteFromFrame( {
+                        "sx": self.cyphers.sx,
+                        "sy": self.cyphers.sy[ sScorePart ],
+                        "sw": self.cyphers.sw,
+                        "sh": self.cyphers.sh,
+                        "dx": iDx - ( iIndex * ( self.cyphers.sw + 2 ) ),
+                        "dy": 50,
+                        "dw": self.cyphers.sw,
+                        "dh": self.cyphers.sh
+                    } );
+                } );
+            },
+            "update" : function() {
+                this.draw();
+            }
+        };
 
         //Container (repaire visuel : ou l'on va pop les pieces)
         this.container = {
@@ -310,7 +358,7 @@
             ],
             "draw": function(){
                 for (var i = 0; i < this.frames.length; i++) {
-                    game.app.context.fillStyle = '#4ac9ba';
+                    game.app.context.fillStyle = '#89D3C3';
                     game.app.context.rect(this.frames[i].dx, this.frames[i].dy, this.frames[i].dw, this.frames[i].dh);
                     game.app.context.fill();
                     game.app.context.stroke;
@@ -339,167 +387,166 @@
                 },
                 // 1 : pink
                 {
-                 "sx": 309,
-                       "sy": 273,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x + 10 || 5,
-                    "dy": y + 10 || game.app.height - 100 ,
-                    // 3/10 of board warming to keep the good proportion
+                    "sx": 309,
+                    "sy": 273,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 5,
+                    "dy": y + 5,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 2 : darkblue horizontal
                 {
-                 "sx": 388,
-                       "sy": 272,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 388,
+                    "sy": 272,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 5,
+                    "dy": y + 5,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 3 : darkblue vertical
                 {
-                 "sx": 468,
-                       "sy": 273,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 468,
+                    "sy": 273,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 5,
+                    "dy": y + 5,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 4 : lightblue
                 {
-                 "sx": 520,
-                       "sy": 273,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 520,
+                    "sy": 273,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 4,
+                    "dy": y + 4,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 5 : darkcyan both right
                 {
-                 "sx": 310,
-                       "sy": 352,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 310,
+                    "sy": 352,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x - 9,
+                    "dy": y - 9,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 6 : darkcyan both left
                 {
-                 "sx": 388,
-                       "sy": 352,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 388,
+                    "sy": 352,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 14,
+                    "dy": y - 9,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 7 : darkcyan top right
                 {
-                 "sx": 467,
-                       "sy": 352,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 467,
+                    "sy": 352,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x - 7,
+                    "dy": y + 18,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3    
                 },
                 // 8 : darkcyan top left
                 {
-                 "sx": 545,
-                       "sy": 352,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 545,
+                    "sy": 352,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 18,
+                    "dy": y + 18,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 9 : yellow
                 {
-                 "sx": 308,
-                       "sy": 431,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 308,
+                    "sy": 431,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 18,
+                    "dy": y + 18,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 10 : red vertical
                 {
-                 "sx": 385,
-                       "sy": 431,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 385,
+                    "sy": 431,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 3,
+                    "dy": y + 18,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 11 : red horizontal
                 {
-                 "sx": 467,
-                       "sy": 431,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 467,
+                    "sy": 431,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 18,
+                    "dy": y + 7,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 12 : orange top right
                 {
-                 "sx": 547,
-                       "sy": 431,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 547,
+                    "sy": 431,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 5,
+                    "dy": y + 5,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
-                // 13 : orange both left
+                // 13 : orange bot left
                 {
-                 "sx": 309,
-                       "sy": 510,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 309,
+                    "sy": 510,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 5,
+                    "dy": y + 5,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 14 : orange both right
                 {
-                 "sx": 388,
-                       "sy": 510,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 388,
+                    "sy": 510,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 5,
+                    "dy": y + 5,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 },
                 // 15 : orange top left
                 {
-                 "sx": 467,
-                       "sy": 510,
-                       "sw": 77,
-                       "sh": 77,
-                    "dx": x,
-                    "dy": y,
+                    "sx": 467,
+                    "sy": 510,
+                    "sw": 77,
+                    "sh": 77,
+                    "dx": x + 5,
+                    "dy": y + 5,
                     "dw": (game.app.width - 20) / 10 * 3,
                     "dh": (game.app.width - 20) / 10 * 3
                 }
@@ -532,6 +579,39 @@
                     var position = game._checkPointerInGrid(); //est ce que le curseur est dans la grille? 
                     if ( position != undefined ) {
                         if (this.canChangeGrid( position )) {//en fcontion de ou j'ai mis mon curseur, vérifie si je peux mettte une piece ou pas
+                            //PIECE
+                           // 0 : grey = empty
+                           // 1 : pink
+                           // 2 : darkblue horizontal
+                           // 3 : darkblue vertical
+                           // 4 : lightblue
+                           // 5 : darkcyan both right
+                           // 6 : darkcyan both left
+                           // 7 : darkcyan top right
+                           // 8 : darkcyan top left
+                           // 9 : yellow
+                           // 10 : red vertical
+                           // 11 : red horizontal
+                           // 12 : orange top right
+                           // 13 : orange both left
+                           // 14 : orange both right
+                           // 15 : orange top left
+                            if ( this.type === 1 ) {
+                                game.score += 9;
+                            } else if( this.type === 2 || this.type === 3 ) {
+                                game.score += 3;
+                            } else if ( this.type === 4 ) {
+                                game.score += 1;
+                            } else if ( this.type === 5 || this.type === 6 || this.type === 7 || this.type === 8 ) {
+                                game.score += 3;
+                            } else if ( this.type === 9 ) {
+                                game.score += 4;
+                            } else if (  this.type === 10 || this.type === 11 ) {
+                                game.score += 2;
+                            } else if ( this.type === 12 || this.type === 13 || this.type === 14 || this.type === 15 ) {
+                                game.score += 5;
+                            }
+                            console.log( game.score );
                             var index = game.pieces.indexOf( this );
                             game.pieces.splice( index, 1);
                             this.changeGrid( position );
@@ -546,6 +626,7 @@
                     }
                 }
             }
+
 
             this.draw();
         }
@@ -761,8 +842,8 @@
 
                 // 3 : darkblue vertical piece
                 case 3: 
-                    if ( position.x > 8 ) {
-                        return false; //Return false et true?? 
+                    if ( position.y > 8 ) {
+                        return false;
                     } else { 
                         for ( var yGrid = position.y - 1 ; yGrid <= position.y + 1 ; yGrid++ ) { 
                             if ( yGrid < 0 ) {
@@ -1024,8 +1105,6 @@
                 } else {
                     game.pieces.push( new Piece(frames[i].dx, frames[i].dy, random) );
                 }
-                
-
             }
 
         };
@@ -1184,6 +1263,7 @@
             
             this.logo.draw();
             this.cup.draw();
+            this.scoreScreen.update();
 
             
             this.plateform.update();
@@ -1231,7 +1311,8 @@
                 };
 
             }
-
+            // Score
+            this.score = 0; 
 
             // launch animation
             this.animate();
