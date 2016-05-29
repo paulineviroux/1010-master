@@ -375,6 +375,24 @@
                 }
 
                 this.draw();
+            },
+            "checkGameOver" : function() { // 
+                for (var i = 0; i < game.grid.length; i++) { //boucle sur la grille complete
+                    if ( game.grid[i].value === 0 ) { //est ce que la case est vide (grise). Attention, après avoir posé 3 pièces, le tableau est vide donc (avant qu'il se remplisse), il nous renvoit que l'on a perdu!
+                        for (var j = 0; j < game.pieces.length; j++) { // B sur les pieces dispo dans les container
+                            var position = {
+                                "x" : game.grid[i].x,
+                                "y" : game.grid[i].y
+                            }
+                            if( game.pieces[j].canChangeGrid( position ) === true ){ // Si c'est vrai, il peut changer la grille donc on a pas perdu
+                                return false;
+                            }
+                        }         
+                    }
+                }
+                if( game.pieces.length > 0 ) {
+                    return true;
+                }
             }
         };
 
@@ -615,6 +633,9 @@
                             var index = game.pieces.indexOf( this );
                             game.pieces.splice( index, 1);
                             this.changeGrid( position );
+                            if( game.container.checkGameOver() === true ){
+                                game.ended = true;
+                            }
                         } else {
                             this.wasDragged = false;
                             this.resetPosition();
@@ -990,7 +1011,7 @@
                 // 12 : orange top right piece
                 case 12 : 
                     
-                    if ( position.x > 8 ) {
+                    if ( position.x > 8 || position.y > 8 ) {
                         return false
                     }
                     else {
@@ -1073,7 +1094,7 @@
                     } 
                     else {
                         for ( var yGrid = position.y - 1 ; yGrid <= position.y + 1 ; yGrid++ ) {
-                            if ( yGrid < 0 ) {
+                            if ( yGrid < 0 || position.x - 1 < 0 ) {
                                 return false
                             }
                             var index = game._indexFromCoord(position.x - 1, yGrid, game.column);
@@ -1082,7 +1103,7 @@
                             }
                         }
                         for ( var xGrid = position.x ; xGrid <= position.x + 1; xGrid++ ) {
-                            if ( xGrid < 0 ) {
+                            if ( xGrid < 0 || position.y - 1 < 0) {
                                 return false
                             }
                             var index = game._indexFromCoord(xGrid, position.y - 1, game.column);
@@ -1103,7 +1124,7 @@
                 if ( random == 0) {
                     i--;
                 } else {
-                    game.pieces.push( new Piece(frames[i].dx, frames[i].dy, random) );
+                    game.pieces.push( new Piece(frames[i].dx, frames[i].dy, 1) );
                 }
             }
 
@@ -1118,8 +1139,8 @@
                     "sy": 872,
                     "sw": 168,
                     "sh": 24,
-                    "dx": ( game.app.width - 168 ) / 2,
-                    "dy": 0, //TODO
+                    "dx": 100,
+                    "dy": 100, //TODO
                     "dw": 168,
                     "dh": 24
                 },
@@ -1128,8 +1149,8 @@
                     "sy": 560,
                     "sw": 40,
                     "sh": 34,
-                    "dx": ( game.app.width - 40 ) / 2,
-                    "dy": 0, //TODO
+                    "dx": ( game.app.width - 40 ) / 2 + 10,
+                    "dy": 45, //TODO
                     "dw": 40,
                     "dh": 34
                 },
@@ -1149,7 +1170,23 @@
                         "8": 800,
                         "9": 831
                     }
+                },
+                "button": {
+                    "sx": 224,
+                    "sy": 560,
+                    "sw": 40,
+                    "sh": 34,
+                    "dx": ( game.app.width - 40 ) / 2 + 10,
+                    "dy": 45, //TODO
+                    "dw": 40,
+                    "dh": 34
                 }
+            },
+            "draw": function( ){
+                game._drawSpriteFromFrame( this.frames.title );
+                game._drawSpriteFromFrame( this.frames.cup );
+                //dessiner
+
             }
         }
 
@@ -1170,6 +1207,7 @@
         };
 
         this._mouseDown = function (event) {
+            game.mouseClick = true;
             for (var i = 0; i < game.pieces.length; i++) {
                 if (game._checkPointerPiece( game.pieces[i] ) == true) {
                     game.mouseDraggedElement = game.pieces[i];
@@ -1186,8 +1224,10 @@
         };
 
         this._mouseUp = function (event){
+            game.mouseClick = false;
             game.mouseDraggedElement = null;
             game.mouseDragging = false;
+
         }
 
         this._updateDragDrop = function (piece){
@@ -1211,18 +1251,18 @@
 
         };
 
-        this._checkPieceInPlateform = function ( piece ){
-            
+        this._checkPointerInReset = function ( ){
+            if ( game.mousePosition.x >= game.gameOverScreen.frames.button.dx 
+                && game.mousePosition.x <= game.gameOverScreen.frames.button.dx + game.gameOverScreen.frames.button.dw  
+                && game.mousePosition.y >= game.gameOverScreen.frames.button.dy 
+                && game.mousePosition.y <= game.gameOverScreen.frames.button.dy + game.gameOverScreen.frames.button.dh )
 
-            if ( piece.frames[0].dx >= game.plateform.frame.dx 
-                && piece.frames[0].dx <= game.plateform.frame.dx + game.plateform.frame.dw 
-                && piece.frames[0].dy >= game.plateform.frame.dy 
-                && piece.frames[0].dy <= game.plateform.frame.dy + game.plateform.frame.dh )   
             {
                 return true;
             } else {
                 return false;
             }
+            
         };
         this._checkPointerInGrid = function () {
             for (var i = 0; i < game.grid.length; i++) {
@@ -1264,16 +1304,30 @@
             this.logo.draw();
             this.cup.draw();
             this.scoreScreen.update();
-
-            
+      
             this.plateform.update();
             this.container.update();
-
-            
+            if ( this.ended  === true ) {
+                this.over();
+                this.scoreScreen.update();
+                this.gameOverScreen.draw();
+                if ( this.mouseClick && this._checkPointerInReset) {
+                    this.init();
+                    //this.ended = false;
+                }
+            }
 
 
         };
         
+        // GameOver
+        this.over = function() {
+            game.app.context.fillStyle = '#B1E0D4';
+            game.app.context.fillRect( 0, 0, game.app.canvas.width , game.app.canvas.height);
+
+
+
+        }
         //Init game
         this.init = function() { // toutess les var que je crée devienennt des prop de game
             if ( !this.eventsSetted ) {
@@ -1286,6 +1340,7 @@
                 x : 0,
                 y : 0
             };
+            this.mouseClick = false;
             this.mouseDragging = false;
             this.mouseDraggedElement = null;
 
@@ -1312,8 +1367,10 @@
 
             }
             // Score
-            this.score = 0; 
-
+            this.score = 0;
+            
+            //End
+            this.ended = false;
             // launch animation
             this.animate();
 
