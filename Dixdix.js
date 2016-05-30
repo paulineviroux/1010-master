@@ -1139,8 +1139,8 @@
                     "sy": 872,
                     "sw": 168,
                     "sh": 24,
-                    "dx": 100,
-                    "dy": 100, //TODO
+                    "dx": ( game.app.width - 168 ) / 2,
+                    "dy": 120, //TODO
                     "dw": 168,
                     "dh": 24
                 },
@@ -1149,8 +1149,8 @@
                     "sy": 560,
                     "sw": 40,
                     "sh": 34,
-                    "dx": ( game.app.width - 40 ) / 2 + 10,
-                    "dy": 45, //TODO
+                    "dx": ( game.app.width - 40 ) / 2 + 20,
+                    "dy": 42, 
                     "dw": 40,
                     "dh": 34
                 },
@@ -1172,21 +1172,20 @@
                     }
                 },
                 "button": {
-                    "sx": 224,
-                    "sy": 560,
-                    "sw": 40,
-                    "sh": 34,
-                    "dx": ( game.app.width - 40 ) / 2 + 10,
-                    "dy": 45, //TODO
-                    "dw": 40,
-                    "dh": 34
+                    "sx": 158,
+                    "sy": 708,
+                    "sw": 132,
+                    "sh": 132,
+                    "dx": ( game.app.width - 132 ) / 2,
+                    "dy": 200, 
+                    "dw": 132,
+                    "dh": 132
                 }
             },
             "draw": function( ){
                 game._drawSpriteFromFrame( this.frames.title );
                 game._drawSpriteFromFrame( this.frames.cup );
-                //dessiner
-
+                game._drawSpriteFromFrame( this.frames.button )
             }
         }
 
