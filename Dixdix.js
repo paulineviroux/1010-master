@@ -427,7 +427,7 @@
                 },
                 // 3 : darkblue vertical
                 {
-                    "sx": 468,
+                    "sx": 467,
                     "sy": 273,
                     "sw": 77,
                     "sh": 77,
@@ -1124,7 +1124,7 @@
                 if ( random == 0) {
                     i--;
                 } else {
-                    game.pieces.push( new Piece(frames[i].dx, frames[i].dy, 1) );
+                    game.pieces.push( new Piece(frames[i].dx, frames[i].dy, random) );
                 }
             }
 
@@ -1312,7 +1312,6 @@
                 this.gameOverScreen.draw();
                 if ( this.mouseClick && this._checkPointerInReset) {
                     this.init();
-                    //this.ended = false;
                 }
             }
 
